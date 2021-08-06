@@ -111,9 +111,9 @@ void expandList(List<int> data, int newLength) {
 
   // replace any new allocations with 0
   for (var i = 0; i < data.length; i++) {
-    if (data[i] == null) {
-      data[i] = 0;
-    }
+    // if (data[i] == null) {
+    //   data[i] = 0;
+    // }
   }
 }
 
@@ -143,9 +143,9 @@ String wordsToUtf8(List<int> words) {
   var sigBytes = words.length;
   var chars = <int>[];
   for (var i = 0; i < sigBytes; i++) {
-    if (words[i >> 2] == null) {
-      words[i >> 2] = 0;
-    }
+    // if (words[i >> 2] == null) {
+    //   words[i >> 2] = 0;
+    // }
     var bite = ((words[i >> 2]).toSigned(32) >> (24 - (i % 4) * 8)) & 0xff;
     chars.add(bite);
   }
@@ -156,24 +156,20 @@ String wordsToUtf8(List<int> words) {
 List<int> parseBase64(String base64Str) {
   const map =
       'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
-  List reverseMap;
+  List<int> reverseMap = [];
   // Shortcuts
   var base64StrLength = base64Str.length;
 
-  if (reverseMap == null) {
-    reverseMap = new List<int>(123);
-    for (var j = 0; j < map.length; j++) {
-      reverseMap[map.codeUnits[j]] = j;
-    }
+  reverseMap = List<int>.generate(123, (i) => i ++);
+  for (var j = 0; j < map.length; j++) {
+    reverseMap[map.codeUnits[j]] = j;
   }
 
   // Ignore padding
   var paddingChar = map.codeUnits[64];
-  if (paddingChar != null) {
-    var paddingIndex = base64Str.codeUnits.indexOf(paddingChar);
-    if (paddingIndex != -1) {
-      base64StrLength = paddingIndex;
-    }
+  var paddingIndex = base64Str.codeUnits.indexOf(paddingChar);
+  if (paddingIndex != -1) {
+    base64StrLength = paddingIndex;
   }
 
   List<int> parseLoop(

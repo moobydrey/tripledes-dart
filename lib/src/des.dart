@@ -3,9 +3,9 @@ import 'package:tripledes/src/engine.dart';
 import 'package:tripledes/src/utils.dart';
 
 class DESEngine extends BaseEngine {
-  List<List<int>> _subKeys;
-  int _lBlock;
-  int _rBlock;
+  List<List<int>>? _subKeys;
+  late final int _lBlock;
+  late final int _rBlock;
 
   String get algorithmName => "DES";
 
@@ -15,11 +15,11 @@ class DESEngine extends BaseEngine {
     super.init(forEncryption, key);
 
     // Select 56 bits according to PC1
-    var keyBits = new List<int>(56);
+    var keyBits =  List<int>.generate(56, (i) => i ++);
     for (var i = 0; i < 56; i++) {
       var keyBitPos = PC1[i] - 1;
       keyBits[i] = (rightShift32(
-          this.key[rightShift32(keyBitPos, 5)], (31 - keyBitPos % 32))) &
+          this.key![rightShift32(keyBitPos, 5)], (31 - keyBitPos % 32))) &
       1;
     }
 
@@ -55,14 +55,14 @@ class DESEngine extends BaseEngine {
   }
 
   int processBlock(List<int> M, int offset) {
-    List<List<int>> invSubKeys = new List(16);
-    if (!forEncryption) {
+    List<List<int>> invSubKeys = List<List<int>>.generate(16, (_) => []);;
+    if (!forEncryption!) {
       for (var i = 0; i < 16; i++) {
-        invSubKeys[i] = _subKeys[15 - i];
+        invSubKeys[i] = _subKeys![15 - i];
       }
     }
 
-    List<List<int>> subKeys = forEncryption ? _subKeys : invSubKeys;
+    List<List<int>> subKeys = forEncryption! ? _subKeys! : invSubKeys;
 
     this._lBlock = M[offset].toSigned(32);
     this._rBlock = M[offset + 1].toSigned(32);
@@ -84,7 +84,7 @@ class DESEngine extends BaseEngine {
       var f = 0.toSigned(32);
       for (var i = 0; i < 8; i++) {
         (f |= (SBOX_P[i][((rBlock ^ subKey[i]).toSigned(32) & SBOX_MASK[i])
-            .toUnsigned(32)])
+            .toUnsigned(32)])!
             .toSigned(32))
             .toSigned(32);
       }
@@ -112,10 +112,10 @@ class DESEngine extends BaseEngine {
 
   void reset() {
     forEncryption = false;
-    this.key = null;
-    _subKeys = null;
-    _lBlock = null;
-    _rBlock = null;
+    this.key;
+    _subKeys;
+    _lBlock;
+    _rBlock;
   }
 
   // Swap bits across the left and right words

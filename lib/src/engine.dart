@@ -9,8 +9,8 @@ abstract class Engine {
 
 /// BufferedBlockAlgorithm.process()
 abstract class BaseEngine implements Engine {
-  bool forEncryption;
-  List<int> key;
+  bool? forEncryption;
+  List<int>? key;
 
   void init(bool forEncryption, List<int> key) {
     this.key = key;
@@ -27,7 +27,7 @@ abstract class BaseEngine implements Engine {
   List<int> process(List<int> dataWords) {
     var blockSize = 2;
 
-    if (forEncryption) {
+    if (forEncryption!) {
       pkcs7Pad(dataWords, blockSize);
     }
 
@@ -54,7 +54,7 @@ abstract class BaseEngine implements Engine {
     var nBytesReady = min(nWordsReady * 4, dataSigBytes);
 
     // Process blocks
-    List<int> processedWords;
+    List<int> processedWords = [];
     if (nWordsReady != 0) {
       for (var offset = 0; offset < nWordsReady; offset += blockSize) {
         // Perform concrete-algorithm logic
@@ -73,7 +73,7 @@ abstract class BaseEngine implements Engine {
       return 0;
     });
 
-    if (!forEncryption) {
+    if (!forEncryption!) {
       pkcs7Unpad(result, blockSize);
     }
 
