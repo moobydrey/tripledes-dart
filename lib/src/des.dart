@@ -4,8 +4,8 @@ import 'package:tripledes/src/utils.dart';
 
 class DESEngine extends BaseEngine {
   List<List<int>>? _subKeys;
-  late final int _lBlock;
-  late final int _rBlock;
+  int _lBlock = 0;
+  int _rBlock = 0;
 
   String get algorithmName => "DES";
 
